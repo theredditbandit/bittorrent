@@ -8,6 +8,16 @@ import (
 	"strings"
 )
 
+type metaInfo struct {
+	Announce string
+	Info     struct {
+		Length      int
+		Name        string
+		PieceLength int `bencode:"piece length"`
+		Pieces      string
+	}
+}
+
 func main() {
 	command := os.Args[1]
 	if command == "decode" {
@@ -21,18 +31,17 @@ func main() {
 		fmt.Println(string(jsonOutput))
 	} else if command == "info" {
 		fileName := os.Args[2]
-		fileReader, err := os.Open(fileName)
+		r, err := os.Open(fileName)
 		if err != nil {
-			fmt.Printf("err: %v\n", err)
+			fmt.Printf("err file opening: %v\n", err)
 		}
-		content, err := bencode.Decode(fileReader)
+		var torrentFile metaInfo
+		err = bencode.Unmarshal(r, &torrentFile)
 		if err != nil {
-			fmt.Printf("err: %v\n", err)
+			fmt.Printf("err unmarshalling: %v\n", err)
 		}
-		metaInfo, _ := content.(map[string]interface{})
-        fmt.Printf("Tracker URL: %v\n",metaInfo["announce"])
-        info , _ := metaInfo["info"].(map[string]interface{})
-        fmt.Printf("Length: %v\n",info["length"])
+        fmt.Printf("Tracker URL: %s\n", torrentFile.Announce)
+        fmt.Printf("Length: %d\n", torrentFile.Info.Length)
 
 	} else {
 		fmt.Println("Unknown command: " + command)
