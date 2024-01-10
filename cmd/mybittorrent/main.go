@@ -3,20 +3,11 @@ package main
 import (
 	"encoding/json"
 	"fmt"
-	"github.com/jackpal/bencode-go"
 	"os"
 	"strings"
-)
 
-type metaInfo struct {
-	Announce string
-	Info     struct {
-		Length      int
-		Name        string
-		PieceLength int `bencode:"piece length"`
-		Pieces      string
-	}
-}
+	"github.com/jackpal/bencode-go"
+)
 
 func main() {
 	command := os.Args[1]
@@ -40,9 +31,10 @@ func main() {
 		if err != nil {
 			fmt.Printf("err unmarshalling: %v\n", err)
 		}
-        fmt.Printf("Tracker URL: %s\n", torrentFile.Announce)
-        fmt.Printf("Length: %d\n", torrentFile.Info.Length)
-
+        hash := torrentFile.hash()
+		fmt.Printf("Tracker URL: %s\n", torrentFile.Announce)
+		fmt.Printf("Length: %d\n", torrentFile.Info.Length)
+		fmt.Printf("Info Hash: %x\n", hash)
 	} else {
 		fmt.Println("Unknown command: " + command)
 		os.Exit(1)
