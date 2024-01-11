@@ -17,8 +17,17 @@ type metaInfo struct {
 	}
 }
 
+func (m metaInfo) printPieceHashes() {
+    pieces := []byte(m.Info.Pieces)
+    fmt.Println("Piece Hashes:")
+    for i := 0; i< len(pieces); i += 20 {
+        hash := pieces[i:i+20]
+        fmt.Printf("%x\n",hash)
+    }
+}
+
 // hashes the Info struct
-func (m metaInfo) hash() string {
+func (m metaInfo) getInfoHash() string {
 	bencodedString := m.encode()
 	h := sha1.New()
 	h.Write([]byte(bencodedString))

@@ -31,10 +31,11 @@ func main() {
 		if err != nil {
 			fmt.Printf("err unmarshalling: %v\n", err)
 		}
-        hash := torrentFile.hash()
 		fmt.Printf("Tracker URL: %s\n", torrentFile.Announce)
 		fmt.Printf("Length: %d\n", torrentFile.Info.Length)
-		fmt.Printf("Info Hash: %x\n", hash)
+		fmt.Printf("Info Hash: %x\n", torrentFile.getInfoHash())
+        fmt.Printf("Piece Length: %v\n", torrentFile.Info.PieceLength)
+        torrentFile.printPieceHashes()
 	} else {
 		fmt.Println("Unknown command: " + command)
 		os.Exit(1)
